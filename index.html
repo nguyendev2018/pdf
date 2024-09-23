@@ -211,6 +211,32 @@
             pdfContainer.classList.remove("dragging");
         });
 
+        // Thêm sự kiện cảm ứng
+        pdfContainer.addEventListener("touchstart", (e) => {
+            isDragging = true;
+            pdfContainer.classList.add("dragging");
+            startX = e.touches[0].pageX - pdfContainer.offsetLeft;
+            startY = e.touches[0].pageY - pdfContainer.offsetTop;
+            scrollLeft = pdfContainer.scrollLeft;
+            scrollTop = pdfContainer.scrollTop;
+        });
+
+        pdfContainer.addEventListener("touchmove", (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+            const x = e.touches[0].pageX - pdfContainer.offsetLeft;
+            const y = e.touches[0].pageY - pdfContainer.offsetTop;
+            const walkX = (x - startX) * 1.5;
+            const walkY = (y - startY) * 1.5;
+            pdfContainer.scrollLeft = scrollLeft - walkX;
+            pdfContainer.scrollTop = scrollTop - walkY;
+        });
+
+        pdfContainer.addEventListener("touchend", () => {
+            isDragging = false;
+            pdfContainer.classList.remove("dragging");
+        });
+
         pdfjsLib.getDocument(url).promise.then((pdfDoc_) => {
             pdfDoc = pdfDoc_;
 
